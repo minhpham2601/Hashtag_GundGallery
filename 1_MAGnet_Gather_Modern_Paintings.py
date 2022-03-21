@@ -1,43 +1,47 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# <a href="https://colab.research.google.com/github/robgon-art/MAGnet/blob/main/1_MAGnet_Gather_Modern_Paintings.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
-# In[ ]:
-
-
-from google.colab import drive
-drive.mount('/content/gdrive')
+# <a href="https://colab.research.google.com/github/robgon-art/MAGnet/blob/main/1_MAGnet_Gather_Modern_Paintings.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>x
 
 
 # In[ ]:
+import os
 
+cwd = os.getcwd() #returns the current directory that the file is working in  a
+#string format for the running the script and save the images in the same images
+#into my own directory
 
-file_path = "/content/gdrive/MyDrive/modern_paintings"
+file_path = cwd+"/modern_paintings"
 
 
 # In[ ]:
-
-
+from IPython import get_ipython
+from IPython.core.interactiveshell import InteractiveShell
+shell = InteractiveShell.instance()
 get_ipython().system('mkdir $file_path')
 
-
 # In[ ]:
 
-
-import urllib
-import re
-from bs4 import BeautifulSoup
-import time
+import urllib #collects several modules for working with URLs
+import re #regular expression matching operations similar
+from bs4 import BeautifulSoup #pulling data out of HTML and XML files, works with parser
+#to provide idiomatic ways of navigating, searching, and modifying the parse tree
+import time #provides various time-related functions
 
 def get_images(url):
   print(url)
-  genre_soup = BeautifulSoup(urllib.request.urlopen(url), "lxml")
+  genre_soup = BeautifulSoup(urllib.request.urlopen(url, "lxml")) # 1. represents
+  #the document as a nested data structure; "lxml" - parser
+  #2. defines functions and classes which help in opening URLs (mostly HTTP)
+  #in a complex world — basic and digest authentication, redirections, cookies and more
   artist_list_main = genre_soup.find("main")
   lis = artist_list_main.find_all("li")
+  # The script goes through each artist on the site alphabetically. It checks to
+  # see if the artist is tagged as part of the “modern” art movement and if they
+  # were born after 1800 and died before 1950.
 
   # for each list element
-  for li in lis: 
+  for li in lis:
     born = 0
     died = 0
 
@@ -107,7 +111,7 @@ def get_images(url):
               #download the file
               try:
                 print("downloading to " + save_path)
-                time.sleep(0.2)  # try not to get a 403                    
+                time.sleep(0.2)  # try not to get a 403
                 urllib.request.urlretrieve(image_url, save_path)
                 image_count = image_count + 1
               except Exception as e:
@@ -119,13 +123,21 @@ def get_images(url):
 
 base_url = "https://www.wikiart.org"
 urls = []
-for c in range(ord('a'), ord('z') + 1):
-  char = chr(c)
-  artist_list_url = base_url + "/en/Alphabet/" + char + "/text-list"
+GG_terms = ['abstract-art', 'surrealism', 'abstract-expressionism',
+             'post-painterly-abstraction', 'pop-art',
+            'minimalism','post-minimalism','photorealism',
+           'contemproray','conceptual-art','contemporary-realism',
+            'hyper-mannerism-anachronism','documentary-photography',
+          'street-photography']
+
+# 'color-field-painting', 'hard-edge-painting',
+#for c in range(ord('a'), ord('z') + 1)#
+for c in GG_terms:
+  #char = chr(c)
+  artist_list_url = base_url + "/en/artists-by-art-movement/" + c + "#!#resultType:text"
   urls.append(artist_list_url)
 
 print(urls)
-
 
 # In[ ]:
 
@@ -135,4 +147,3 @@ executor = None
 with ThreadPoolExecutor(max_workers = 8) as executor:
   ex = executor
   executor.map(get_images, urls)
-
