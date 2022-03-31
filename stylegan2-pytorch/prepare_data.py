@@ -21,7 +21,7 @@ def resize_and_convert(img, size, resample, quality=100):
 
 
 def resize_multiple(
-    img, sizes=(128, 256, 512, 1024), resample=Image.LANCZOS, quality=100
+    img, sizes=(128, 256, 512, 1024), resample=torchvision.transforms.InterpolationMode.LANCZOS, quality=100
 ):
     imgs = []
 
@@ -41,7 +41,7 @@ def resize_worker(img_file, sizes, resample):
 
 
 def prepare(
-    env, dataset, n_worker, sizes=(128, 256, 512, 1024), resample=Image.LANCZOS
+    env, dataset, n_worker, sizes=(128, 256, 512, 1024), resample=torchvision.transforms.InterpolationMode.LANCZOS
 ):
     resize_fn = partial(resize_worker, sizes=sizes, resample=resample)
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    resample_map = {"lanczos": Image.LANCZOS, "bilinear": Image.BILINEAR}
+    resample_map = {"lanczos": torchvision.transforms.InterpolationMode.LANCZOS, "bilinear": Image.BILINEAR}
     resample = resample_map[args.resample]
 
     sizes = [int(s.strip()) for s in args.size.split(",")]
