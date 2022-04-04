@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from MAGnet.op.fused_act import FusedLeakyReLU, fused_leaky_relu
+from git .op.fused_act import FusedLeakyReLU, fused_leaky_relu
 from MAGnet.op.upfirdn2d import upfirdn2d
 
 class PixelNorm(nn.Module):
