@@ -8,6 +8,9 @@ import lmdb
 from tqdm import tqdm
 from torchvision import datasets
 from torchvision.transforms import functional as trans_fn
+import torch
+from PIL import Image
+from torch import Tensor
 
 
 def resize_and_convert(img, size, resample, quality=100):
